@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA Surveillance Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>AURA Surveillance</h1>
+                <p>Commercial AI Operations Monitor</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="live-feeds">Live Feeds</a>
+                <a href="#" class="nav-item" data-page="alert-history">Alert History</a>
+                <a href="#" class="nav-item" data-page="system-settings">System Settings</a>
+                <a href="#" class="nav-item" data-page="demo-sandbox">Demo Sandbox</a>
+                <a href="#" class="nav-item" data-page="executive-summary">Executive Summary</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Top Header -->
+            <header class="top-header">
+                <h2 id="page-title">Live CCTV Feeds</h2>
+                <div class="user-profile">
+                    <span class="role">ADMIN</span>
+                    <span class="username">admin</span>
+                    <button class="logout-btn">Logout</button>
+                </div>
+            </header>
+
+            <!-- Dynamic Page Content -->
+            <div id="page-content" class="page-content">
+                <!-- Content injected via JS -->
+            </div>
+            
+            <!-- Alert History Template (Hidden) -->
+            <template id="alert-history-template">
+                <div class="history-header">
+                    <p class="history-desc">Comprehensive log of all surveillance events.</p>
+                    <div class="history-stats">Total Events: <span id="history-total">0</span></div>
+                </div>
+                
+                <div class="filters-bar">
+                    <select id="filter-camera">
+                        <option value="">All Cameras</option>
+                    </select>
+                    <select id="filter-rule">
+                        <option value="">All Rules</option>
+                        <option value="Counter Empty">Counter Empty</option>
+                        <option value="Queue Count">Queue Count</option>
+                        <option value="Customer Wait">Customer Wait</option>
+                        <option value="Late Opening">Late Opening</option>
+                        <option value="Crowd Congestion">Crowd Congestion</option>
+                        <option value="Suspicious Unattended Bag">Suspicious Unattended Bag</option>
+                        <option value="Entrance Blocked">Entrance Blocked</option>
+                        <option value="Intrusion Detection">Intrusion Detection</option>
+                    </select>
+                    <select id="filter-severity">
+                        <option value="">All Severities</option>
+                        <option value="INFO">INFO</option>
+                        <option value="WARNING">WARNING</option>
+                        <option value="HIGH">HIGH</option>
+                        <option value="CRITICAL">CRITICAL</option>
+                    </select>
+                    <select id="filter-status">
+                        <option value="">All Statuses</option>
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="RESOLVED">RESOLVED</option>
+                    </select>
+                    <button id="apply-filters-btn" class="btn secondary">Apply Filters</button>
+                </div>
+
+                <div class="table-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Camera</th>
+                                <th>Rule</th>
+                                <th>Severity</th>
+                                <th>Zone</th>
+                                <th>Status</th>
+                                <th>Event ID</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-tbody">
+                            <!-- Rows -->
+                        </tbody>
+                    </table>
+                    <div id="history-empty" class="empty-state hidden">No events found matching filters.</div>
+                </div>
+                
+                <div class="pagination">
+                    <button id="page-prev" class="btn secondary" disabled>Previous</button>
+                    <span id="page-info">Page 1</span>
+                    <button id="page-next" class="btn secondary" disabled>Next</button>
+                </div>
+            </template>
+
+            <!-- Demo Sandbox Template (Hidden) -->
+            <template id="demo-sandbox-template">
+                <div class="sandbox-header">
+                    <p class="history-desc">Upload a CCTV video to test the AURA AI pipeline (8 surveillance rules).</p>
+                </div>
+                
+                <div class="sandbox-container">
+                    <div class="sandbox-upload-box" id="sandbox-upload-box">
+                        <input type="file" id="sandbox-file-input" accept="video/mp4,video/avi,video/quicktime" hidden>
+                        <button class="btn primary" id="sandbox-upload-btn">Choose Surveillance Video</button>
+                        <p class="upload-hint">Supported formats: MP4, AVI, MOV</p>
+                    </div>
+
+                    <div class="sandbox-status-box hidden" id="sandbox-status-box">
+                        <h3 id="sandbox-status-text">INITIALIZING...</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="sandbox-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="sandbox-stats">
+                            <span id="sandbox-frames">Frames: 0/0</span>
+                            <span id="sandbox-events">Events Generated: 0</span>
+                        </div>
+                    </div>
+
+                    <div class="sandbox-video-box hidden" id="sandbox-video-box">
+                        <h3 style="margin-bottom: 12px; color: var(--text-primary);">AI Playback Active</h3>
+                        <video id="sandbox-video-player" controls autoplay muted style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color);"></video>
+                    </div>
+                </div>
+            </template>
+        </main>
+
+        <!-- Right Alert Panel -->
+        <aside class="alert-panel">
+            <div class="alert-header">
+                <h3>Live Alerts <span id="active-alert-count" class="badge">0</span></h3>
+            </div>
+            <div id="alert-list" class="alert-list">
+                <!-- Alerts injected via JS -->
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Modals -->
+    <div id="event-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Event Details</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="event-meta">
+                    <span id="modal-severity" class="severity-badge"></span>
+                    <span id="modal-status" class="status-badge" style="margin-right: 8px;"></span>
+                    <span id="modal-rule-name"></span>
+                </div>
+                <div class="event-meta">
+                    <span id="modal-timestamp"></span>
+                    <span id="modal-camera"></span>
+                    <span id="modal-event-id" style="font-family: monospace; font-size: 11px;"></span>
+                </div>
+                <div class="event-image-container">
+                    <img id="modal-image" src="" alt="Event Snapshot">
+                    <div id="modal-no-image" class="hidden">No Image Available</div>
+                </div>
+                <div class="event-details-text">
+                    <h4>Details</h4>
+                    <p id="modal-details-text"></p>
+                    <p id="modal-resolved-time" class="hidden" style="margin-top: 8px; font-size: 11px; color: var(--status-green);"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span id="modal-feedback" style="margin-right: auto; font-size: 12px;"></span>
+                <button id="modal-acknowledge-btn" class="btn primary">Resolve Event</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="add-camera-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add Camera</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="camera-name">Camera Friendly Name</label>
+                    <input type="text" id="camera-name" placeholder="e.g. Main Lobby">
+                </div>
+                <div class="form-group">
+                    <label for="camera-source">RTSP Feed URL or Local File Path</label>
+                    <input type="text" id="camera-source" placeholder="rtsp://...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn secondary close-modal">Cancel</button>
+                <button id="submit-camera-btn" class="btn primary">Add Camera Feed</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
