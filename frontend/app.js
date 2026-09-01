@@ -24,7 +24,7 @@ const state = {
 const BACKEND_URL = "https://aura-surveillance.onrender.com";
 
 // REST API
-const API_BASE = `${BACKEND_URL}/api`;
+const API_BASE = "https://aura-surveillance.onrender.com/api";
 
 // WebSocket
 const WS_URL = "wss://aura-surveillance.onrender.com/ws/events";
