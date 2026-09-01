@@ -3,6 +3,8 @@ from typing import List, Optional
 from datetime import datetime
 from sqlalchemy import text
 from sqlalchemy.orm import Session
+from backend.app.database import SessionLocal, engine
+
 
 from backend.app.database import SessionLocal, engine
 from backend.app.models import Event
