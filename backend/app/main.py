@@ -15,11 +15,14 @@ app = FastAPI(
 # CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allow localhost development origins
+    allow_origins=[
+        "https://aura-surveillance.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 app.include_router(cameras.router)
 app.include_router(events.router)
