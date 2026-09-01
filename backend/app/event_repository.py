@@ -3,26 +3,25 @@ from typing import List, Optional
 from datetime import datetime
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-from backend.app.database import SessionLocal, engine
 
-
-from backend.app.database import SessionLocal, engine
+from backend.app.database import SessionLocal, engine, Base
 from backend.app.models import Event
 from backend.app.event_manager import NormalizedEvent
+
 
 class EventRepository:
     def __init__(self):
         self._ensure_schema_updated()
 
-    def _ensure_schema_updated(self):
+   def _ensure_schema_updated(self):
         """
         Dynamically adds missing columns if the table was created before the schema update,
         and creates necessary indexes without destroying existing data.
         """
-        with engine.begin() as conn:
             # Check existing columns using SQLite pragma
-            result = conn.execute(text("PRAGMA table_info(events)"))
-            columns = [row[1] for row in result.fetchall()]
+          Base.metadata.create_all(bind=engine)
+
+    with engine.begin() as conn:
             
             # Map of column to schema definition for missing columns
             updates = {
