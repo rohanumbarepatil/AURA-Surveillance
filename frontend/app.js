@@ -693,7 +693,8 @@ async function pollSandboxJob(jobId) {
                     }
 
 
-                    videoPlayer.src = videoUrl;
+                    videoPlayer.src = `https://aura-surveillance.onrender.com${job.output_video}`;
+
 
                     videoPlayer.load();
 
